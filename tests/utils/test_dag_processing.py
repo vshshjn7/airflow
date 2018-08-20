@@ -135,11 +135,7 @@ class TestDagFileProcessorManager(unittest.TestCase):
             dag_directory='directory',
             file_paths=['abc.txt'],
             max_runs=1,
-            processor_factory=MagicMock().return_value,
-            processor_timeout=timedelta.max,
-            signal_conn=MagicMock(),
-            async_mode=True)
-
+            processor_factory=MagicMock().return_value)
         mock_processor = MagicMock()
         mock_processor.stop.side_effect = AttributeError(
             'DagFileProcessor object has no attribute stop')
@@ -155,11 +151,7 @@ class TestDagFileProcessorManager(unittest.TestCase):
             dag_directory='directory',
             file_paths=['abc.txt'],
             max_runs=1,
-            processor_factory=MagicMock().return_value,
-            processor_timeout=timedelta.max,
-            signal_conn=MagicMock(),
-            async_mode=True)
-
+            processor_factory=MagicMock().return_value)
         mock_processor = MagicMock()
         mock_processor.stop.side_effect = AttributeError(
             'DagFileProcessor object has no attribute stop')

@@ -378,6 +378,18 @@ then you need to change it like this
     def is_active(self):
       return self.active
 
+### Rename of BashTaskRunner to StandardTaskRunner
+
+BashTaskRunner has been renamed to StandardTaskRunner. It is the default task runner
+so you might need to update your config.
+
+`task_runner = StandardTaskRunner`
+
+### min_file_parsing_loop_time config option temporarily disabled
+
+The scheduler.min_file_parsing_loop_time config option has been temporarily removed due to
+some bugs.
+
 ## Airflow 1.10
 
 Installation and upgrading requires setting `SLUGIFY_USES_TEXT_UNIDECODE=yes` in your environment or

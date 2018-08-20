@@ -709,6 +709,8 @@ class DagFileProcessorManager(LoggingMixin):
     def __init__(self,
                  dag_directory,
                  file_paths,
+                 parallelism,
+                 process_file_interval,
                  max_runs,
                  processor_factory,
                  processor_timeout,
@@ -720,6 +722,11 @@ class DagFileProcessorManager(LoggingMixin):
         :type dag_directory: unicode
         :param file_paths: list of file paths that contain DAG definitions
         :type file_paths: list[unicode]
+        :param parallelism: maximum number of simultaneous process to run at once
+        :type parallelism: int
+        :param process_file_interval: process a file at most once every this
+        many seconds
+        :type process_file_interval: float
         :param max_runs: The number of times to parse and schedule each file. -1
             for unlimited.
         :type max_runs: int
@@ -737,6 +744,7 @@ class DagFileProcessorManager(LoggingMixin):
         self._file_path_queue = []
         self._dag_directory = dag_directory
         self._max_runs = max_runs
+        self._process_file_interval = process_file_interval
         self._processor_factory = processor_factory
         self._signal_conn = signal_conn
         self._async_mode = async_mode
@@ -1172,7 +1180,7 @@ class DagFileProcessorManager(LoggingMixin):
                 last_finish_time = self.get_last_finish_time(file_path)
                 if (last_finish_time is not None and
                     (now - last_finish_time).total_seconds() <
-                        self._file_process_interval):
+                        self._process_file_interval):
                     file_paths_recently_processed.append(file_path)
 
             files_paths_at_run_limit = [file_path
