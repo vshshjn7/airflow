@@ -1317,6 +1317,11 @@ class SchedulerJob(BaseJob):
         # actually enqueue them
         for task_instance in task_instances:
             simple_dag = simple_dag_bag.get_dag(task_instance.dag_id)
+
+            path = simple_dag.full_filepath
+            if path.startswith(settings.DAGS_FOLDER):
+                path = path.replace(settings.DAGS_FOLDER, "DAGS_FOLDER", 1)
+
             command = " ".join(TI.generate_command(
                 task_instance.dag_id,
                 task_instance.task_id,
@@ -1328,7 +1333,7 @@ class SchedulerJob(BaseJob):
                 ignore_task_deps=False,
                 ignore_ti_state=False,
                 pool=task_instance.pool,
-                file_path=simple_dag.full_filepath,
+                file_path=path,
                 pickle_id=simple_dag.pickle_id))
 
             priority = task_instance.priority_weight
