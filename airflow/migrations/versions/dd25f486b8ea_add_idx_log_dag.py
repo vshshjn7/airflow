@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 #
 # Licensed to the Apache Software Foundation (ASF) under one
 # or more contributor license agreements.  See the NOTICE file
@@ -16,6 +15,27 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-#
 
-version = '1.10.0+twtr11'
+from alembic import op
+
+"""add idx_log_dag
+
+Revision ID: dd25f486b8ea
+Revises: 9635ae0956e7
+Create Date: 2018-08-07 06:41:41.028249
+
+"""
+
+# revision identifiers, used by Alembic.
+revision = 'dd25f486b8ea'
+down_revision = '9635ae0956e7'
+branch_labels = None
+depends_on = None
+
+
+def upgrade():
+    op.create_index('idx_log_dag', 'log', ['dag_id'], unique=False)
+
+
+def downgrade():
+    op.drop_index('idx_log_dag', table_name='log')

@@ -2098,6 +2098,10 @@ class Log(Base):
     owner = Column(String(500))
     extra = Column(Text)
 
+    __table_args__ = (
+        Index('idx_log_dag', dag_id),
+    )
+
     def __init__(self, event, task_instance, owner=None, extra=None, **kwargs):
         self.dttm = timezone.utcnow()
         self.event = event
@@ -2939,7 +2943,7 @@ class BaseOperator(LoggingMixin):
 
     def add_only_new(self, item_set, item):
         if item in item_set:
-            raise AirflowException(
+            self.log.warning(
                 'Dependency {self}, {item} already registered'
                 ''.format(**locals()))
         else:
@@ -3252,6 +3256,8 @@ class DAG(BaseDag, LoggingMixin):
         self.on_success_callback = on_success_callback
         self.on_failure_callback = on_failure_callback
 
+        self._old_context_manager_dags = []
+
         self._comps = {
             'dag_id',
             'task_ids',
@@ -3299,13 +3305,13 @@ class DAG(BaseDag, LoggingMixin):
 
     def __enter__(self):
         global _CONTEXT_MANAGER_DAG
-        self._old_context_manager_dag = _CONTEXT_MANAGER_DAG
+        self._old_context_manager_dags.append(_CONTEXT_MANAGER_DAG)
         _CONTEXT_MANAGER_DAG = self
         return self
 
     def __exit__(self, _type, _value, _tb):
         global _CONTEXT_MANAGER_DAG
-        _CONTEXT_MANAGER_DAG = self._old_context_manager_dag
+        _CONTEXT_MANAGER_DAG = self._old_context_manager_dags.pop()
 
     # /Context Manager ----------------------------------------------
 

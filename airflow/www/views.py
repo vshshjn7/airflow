@@ -1063,6 +1063,32 @@ class Airflow(BaseView):
             "it should start any moment now.".format(ti))
         return redirect(origin)
 
+    @expose('/delete')
+    @login_required
+    @wwwutils.action_logging
+    @wwwutils.notify_owner
+    def delete(self):
+        from airflow.api.common.experimental import delete_dag
+        from airflow.exceptions import DagNotFound, DagFileExists
+
+        dag_id = request.args.get('dag_id')
+        origin = request.args.get('origin') or "/admin/"
+
+        try:
+            delete_dag.delete_dag(dag_id)
+        except DagNotFound:
+            flash("DAG with id {} not found. Cannot delete".format(dag_id))
+            return redirect(request.referrer)
+        except DagFileExists:
+            flash("Dag id {} is still in DagBag. "
+                  "Remove the DAG file first.".format(dag_id))
+            return redirect(request.referrer)
+
+        flash("Deleting DAG with id {}. May take a couple minutes to fully"
+              " disappear.".format(dag_id))
+        # Upon successful delete return to origin
+        return redirect(origin)
+
     @expose('/trigger')
     @login_required
     @wwwutils.action_logging
@@ -1302,6 +1328,10 @@ class Airflow(BaseView):
         dag_id = request.args.get('dag_id')
         blur = conf.getboolean('webserver', 'demo_mode')
         dag = dagbag.get_dag(dag_id)
+        if dag_id not in dagbag.dags:
+            flash('DAG "{0}" seems to be missing.'.format(dag_id), "error")
+            return redirect('/admin/')
+
         root = request.args.get('root')
         if root:
             dag = dag.sub_dag(
@@ -2542,9 +2572,18 @@ class DagRunModelView(ModelViewOnly):
             ('failed', 'failed'),
         ],
     }
-    form_args = dict(
-        dag_id=dict(validators=[validators.DataRequired()])
-    )
+    form_args = {
+        'dag_id': {
+            'validators': [
+                validators.DataRequired(),
+            ]
+        },
+        'execution_date': {
+            'filters': [
+                parse_datetime_f,
+            ]
+        }
+    }
     column_list = (
         'state', 'dag_id', 'execution_date', 'run_id', 'external_trigger')
     column_filters = column_list
@@ -2557,6 +2596,7 @@ class DagRunModelView(ModelViewOnly):
         dag_id=dag_link,
         run_id=dag_run_link
     )
+    form_overrides = dict(execution_date=DateTimeField)
 
     @action('new_delete', "Delete", "Are you sure you want to delete selected records?")
     @provide_session
