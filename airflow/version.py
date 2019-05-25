@@ -18,8 +18,4 @@
 # under the License.
 #
 
-<<<<<<< f4915fce569562e3ceede14de6fe73b0f4d5dfcd
-version = '1.10.0+twtr11'
-=======
 version = '1.10.0+rrahman1'
->>>>>>> [DRAFT][AIRFLOW] Added additional logging
