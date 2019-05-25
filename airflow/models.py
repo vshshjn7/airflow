@@ -4185,6 +4185,8 @@ class DAG(BaseDag, LoggingMixin):
         :return: None
         """
 
+        self.log.info("Attempting to sync DAG {} to DB".format(self._dag_id))
+
         if owner is None:
             owner = self.owner
         if sync_time is None:

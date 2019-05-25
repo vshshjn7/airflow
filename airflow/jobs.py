@@ -383,6 +383,7 @@ class DagFileProcessor(AbstractDagFileProcessor, LoggingMixin):
 
                 log.info("Started process (PID=%s) to work on %s",
                          os.getpid(), file_path)
+                log.info("Creating scheduler job")
                 scheduler_job = SchedulerJob(dag_ids=dag_id_white_list, log=log)
                 result = scheduler_job.process_file(file_path,
                                                     pickle_dags)
@@ -412,6 +413,7 @@ class DagFileProcessor(AbstractDagFileProcessor, LoggingMixin):
         """
         Launch the process and start processing the DAG.
         """
+        self.log("Launching process to process DAG at {}".format(self.file_path))
         self._process = DagFileProcessor._launch_process(
             self._result_queue,
             self.file_path,
@@ -598,6 +600,8 @@ class SchedulerJob(BaseJob):
         if run_duration is None:
             self.run_duration = conf.getint('scheduler',
                                             'run_duration')
+
+        self.log.info("Created Scheduler Job")
 
     @provide_session
     def manage_slas(self, dag, session=None):
@@ -1542,7 +1546,7 @@ class SchedulerJob(BaseJob):
         self.log.info(log_str)
 
     def _execute(self):
-        self.log.info("Starting the scheduler")
+        self.log.info("Executing Scheduler Job")
 
         # DAGs can be pickled for easier remote execution by some executors
         pickle_dags = False
@@ -1700,6 +1704,9 @@ class SchedulerJob(BaseJob):
                                                            State.SCHEDULED],
                                                           State.NONE)
 
+                scheduled_dag_ids = ", ".join(simple_dag_bag.dag_ids)
+                self.log.info('DAGs to be executed: {}'.format(scheduled_dag_ids))
+
                 self._execute_task_instances(simple_dag_bag,
                                              (State.SCHEDULED,))
 
@@ -1741,7 +1748,9 @@ class SchedulerJob(BaseJob):
                 break
 
         # Stop any processors
+        self.log.info("Terminating DAG processors")
         processor_manager.terminate()
+        self.log.info("All DAG processors terminated")
 
         # Verify that all files were processed, and if so, deactivate DAGs that
         # haven't been touched by the scheduler as they likely have been
@@ -1749,6 +1758,7 @@ class SchedulerJob(BaseJob):
         all_files_processed = True
         for file_path in known_file_paths:
             if processor_manager.get_last_finish_time(file_path) is None:
+                self.log.info("File {} not processed".format(file_path))
                 all_files_processed = False
                 break
         if all_files_processed:
