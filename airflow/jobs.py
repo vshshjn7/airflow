@@ -383,8 +383,8 @@ class DagFileProcessor(AbstractDagFileProcessor, LoggingMixin):
 
                 log.info("Started process (PID=%s) to work on %s",
                          os.getpid(), file_path)
-                log.info("Creating scheduler job")
                 scheduler_job = SchedulerJob(dag_ids=dag_id_white_list, log=log)
+                log.info("Processing file {}".format(file_path))
                 result = scheduler_job.process_file(file_path,
                                                     pickle_dags)
                 result_queue.put(result)
@@ -600,8 +600,6 @@ class SchedulerJob(BaseJob):
         if run_duration is None:
             self.run_duration = conf.getint('scheduler',
                                             'run_duration')
-
-        self.log.info("Created Scheduler Job")
 
     @provide_session
     def manage_slas(self, dag, session=None):
@@ -1546,7 +1544,7 @@ class SchedulerJob(BaseJob):
         self.log.info(log_str)
 
     def _execute(self):
-        self.log.info("Executing Scheduler Job")
+        self.log.info("Starting the scheduler")
 
         # DAGs can be pickled for easier remote execution by some executors
         pickle_dags = False
