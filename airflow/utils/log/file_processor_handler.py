@@ -138,9 +138,11 @@ class FileProcessorHandler(logging.Handler):
         directory = os.path.dirname(full_path)
 
         if not os.path.exists(directory):
+            logging.info("Creating directory {}".format(directory))
             os.makedirs(directory)
 
         if not os.path.exists(full_path):
+            logging.info("Creating file {}".format(full_path))
             open(full_path, "a").close()
 
         return full_path
