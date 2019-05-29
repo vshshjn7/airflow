@@ -415,7 +415,7 @@ class DagFileProcessor(AbstractDagFileProcessor, LoggingMixin):
         """
         Launch the process and start processing the DAG.
         """
-        self.log("Launching process to process DAG at {}".format(self.file_path))
+        self.log.info("Launching process to process DAG at {}".format(self.file_path))
         self._process = DagFileProcessor._launch_process(
             self._result_queue,
             self.file_path,
