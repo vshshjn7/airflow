@@ -4205,10 +4205,12 @@ class DAG(BaseDag, LoggingMixin):
         session.merge(orm_dag)
         session.commit()
 
-        self.log.info("Synced DAG {} to DB".format(self._dag_id))
+        self.log.info("Synced DAG %s to DB", self._dag_id)
 
         for subdag in self.subdags:
+            self.log.info("Syncing SubDAG %s", subdag._dag_id)
             subdag.sync_to_db(owner=owner, sync_time=sync_time, session=session)
+            self.log.info("Successfully synced SubDAG %s", subdag._dag_id)
 
     @staticmethod
     @provide_session

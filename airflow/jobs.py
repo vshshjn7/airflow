@@ -1676,6 +1676,7 @@ class SchedulerJob(BaseJob):
             # Kick of new processes and collect results from finished ones
             self.log.debug("Heartbeating the process manager")
             simple_dags = processor_manager.heartbeat()
+            self.log.debug("Finished process manager heartbeat")
 
             if self.using_sqlite:
                 # For the sqlite case w/ 1 thread, wait until the processor
