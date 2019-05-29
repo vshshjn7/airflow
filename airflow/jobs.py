@@ -366,6 +366,7 @@ class DagFileProcessor(AbstractDagFileProcessor, LoggingMixin):
             stderr = StreamLogWriter(log, logging.WARN)
 
             log.info("Setting log context for file {}".format(file_path))
+            # log file created here
             set_context(log, file_path)
             log.info("Successfully set log context for file {}".format(file_path))
 

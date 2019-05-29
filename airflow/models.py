@@ -4205,6 +4205,8 @@ class DAG(BaseDag, LoggingMixin):
         session.merge(orm_dag)
         session.commit()
 
+        self.log.info("Synced DAG {} to DB".format(self._dag_id))
+
         for subdag in self.subdags:
             subdag.sync_to_db(owner=owner, sync_time=sync_time, session=session)
 
