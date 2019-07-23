@@ -40,14 +40,14 @@ log = logging.getLogger(__name__)
 RBAC = conf.getboolean('webserver', 'rbac')
 
 TIMEZONE = pendulum.timezone('UTC')
-try:
-    tz = conf.get("core", "default_timezone")
-    if tz == "system":
-        TIMEZONE = pendulum.local_timezone()
-    else:
-        TIMEZONE = pendulum.timezone(tz)
-except:
-    pass
+# try:
+#     tz = conf.get("core", "default_timezone")
+#     if tz == "system":
+#         TIMEZONE = pendulum.local_timezone()
+#     else:
+#         TIMEZONE = pendulum.timezone(tz)
+# except:
+#     pass
 log.info("Configured default timezone %s" % TIMEZONE)
 
 

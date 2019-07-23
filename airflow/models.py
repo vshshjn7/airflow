@@ -297,9 +297,10 @@ class DagBag(BaseDagBag, LoggingMixin):
                     dag.last_loaded < orm_dag.last_expired
                 )
         ):
+            filepath = dag.fileloc if dag else orm_dag.fileloc
             # Reprocess source file
             found_dags = self.process_file(
-                filepath=orm_dag.fileloc, only_if_updated=False)
+                filepath=filepath, only_if_updated=False)
 
             # If the source file no longer exports `dag_id`, delete it from self.dags
             if found_dags and dag_id in [found_dag.dag_id for found_dag in found_dags]:
