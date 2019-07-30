@@ -440,7 +440,6 @@ class DagFileProcessor(AbstractDagFileProcessor, LoggingMixin):
         self._process.join(5)
         if sigkill:
             self._kill_process()
-        self._manager.shutdown()
 
     def kill(self):
         """
@@ -451,7 +450,6 @@ class DagFileProcessor(AbstractDagFileProcessor, LoggingMixin):
         # The queue will likely get corrupted, so remove the reference
         self._result_queue = None
         self._kill_process()
-        self._manager.shutdown()
 
     def _kill_process(self):
         if self._process.is_alive():
@@ -492,19 +490,22 @@ class DagFileProcessor(AbstractDagFileProcessor, LoggingMixin):
         if self._done:
             return True
 
-        if not self._result_queue.empty():
-            self._result = self._result_queue.get_nowait()
-            self._done = True
-            self.log.debug("Waiting for %s", self._process)
-            self._process.join()
-            return True
-
         # Potential error case when process dies
         if not self._process.is_alive():
             self._done = True
-            # Get the object from the queue or else join() can hang.
-            if not self._result_queue.empty():
-                self._result = self._result_queue.get_nowait()
+            # Guard against the case where the results queue has been set to None as
+            # a safety precaution against queue corruption elsewhere in the Scheduler.
+            if self._result_queue is not None:
+              # Get the object from the queue or else join() can hang.
+              if not self._result_queue.empty():
+                  self._result = self._result_queue.get_nowait()
+              self.log.debug("Waiting for %s", self._process)
+              self._process.join()
+            return True
+
+        if not self._result_queue.empty():
+            self._result = self._result_queue.get_nowait()
+            self._done = True
             self.log.debug("Waiting for %s", self._process)
             self._process.join()
             return True
