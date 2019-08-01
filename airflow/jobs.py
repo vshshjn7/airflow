@@ -503,7 +503,7 @@ class DagFileProcessor(AbstractDagFileProcessor, LoggingMixin):
               self._process.join()
             return True
 
-        if not self._result_queue.empty():
+        if self._result_queue and not self._result_queue.empty():
             self._result = self._result_queue.get_nowait()
             self._done = True
             self.log.debug("Waiting for %s", self._process)
