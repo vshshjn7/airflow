@@ -297,9 +297,12 @@ class DagBag(BaseDagBag, LoggingMixin):
                     dag.last_loaded < orm_dag.last_expired
                 )
         ):
+
             # Reprocess source file
+            # TODO: remove the below hack to find relative dag location in webserver
+            filepath = dag.fileloc if dag else orm_dag.fileloc
             found_dags = self.process_file(
-                filepath=orm_dag.fileloc, only_if_updated=False)
+                filepath=filepath, only_if_updated=False)
 
             # If the source file no longer exports `dag_id`, delete it from self.dags
             if found_dags and dag_id in [found_dag.dag_id for found_dag in found_dags]:
@@ -2342,7 +2345,7 @@ class BaseOperator(LoggingMixin):
             email=None,
             email_on_retry=True,
             email_on_failure=True,
-            retries=0,
+            retries=None,
             retry_delay=timedelta(seconds=300),
             retry_exponential_backoff=False,
             max_retry_delay=None,
@@ -2416,7 +2419,8 @@ class BaseOperator(LoggingMixin):
                 self
             )
         self._schedule_interval = schedule_interval
-        self.retries = retries
+        self.retries = retries if retries is not None else \
+            configuration.conf.getint('core', 'default_task_retries', fallback=0)
         self.queue = queue
         self.pool = pool
         self.sla = sla
