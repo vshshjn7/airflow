@@ -52,52 +52,52 @@ def upgrade():
         #    for mysql")
 
         op.alter_column(table_name='chart', column_name='last_modified',
-            type_=mysql.TIMESTAMP(fsp=6))
+                        type_=mysql.TIMESTAMP(fsp=6))
 
         op.alter_column(table_name='dag', column_name='last_scheduler_run',
-            type_=mysql.TIMESTAMP(fsp=6))
+                        type_=mysql.TIMESTAMP(fsp=6))
         op.alter_column(table_name='dag', column_name='last_pickled', type_=mysql.TIMESTAMP(fsp=6))
         op.alter_column(table_name='dag', column_name='last_expired', type_=mysql.TIMESTAMP(fsp=6))
 
         op.alter_column(table_name='dag_pickle', column_name='created_dttm',
-            type_=mysql.TIMESTAMP(fsp=6))
+                        type_=mysql.TIMESTAMP(fsp=6))
 
         # NOTE(kwilson): See below.
         op.alter_column(table_name='dag_run', column_name='execution_date',
-            type_=mysql.TIMESTAMP(fsp=6),
-            nullable=False, server_default=text('CURRENT_TIMESTAMP(6)'))
+                        type_=mysql.TIMESTAMP(fsp=6), nullable=False,
+                        server_default=text('CURRENT_TIMESTAMP(6)'))
         op.alter_column(table_name='dag_run', column_name='start_date',
-            type_=mysql.TIMESTAMP(fsp=6))
+                        type_=mysql.TIMESTAMP(fsp=6))
         op.alter_column(table_name='dag_run', column_name='end_date', type_=mysql.TIMESTAMP(fsp=6))
 
         op.alter_column(table_name='import_error', column_name='timestamp',
-            type_=mysql.TIMESTAMP(fsp=6))
+                        type_=mysql.TIMESTAMP(fsp=6))
 
         op.alter_column(table_name='job', column_name='start_date', type_=mysql.TIMESTAMP(fsp=6))
         op.alter_column(table_name='job', column_name='end_date', type_=mysql.TIMESTAMP(fsp=6))
         op.alter_column(table_name='job', column_name='latest_heartbeat',
-            type_=mysql.TIMESTAMP(fsp=6))
+                        type_=mysql.TIMESTAMP(fsp=6))
 
         op.alter_column(table_name='known_event', column_name='start_date',
-            type_=mysql.TIMESTAMP(fsp=6))
+                        type_=mysql.TIMESTAMP(fsp=6))
         op.alter_column(table_name='known_event', column_name='end_date',
-            type_=mysql.TIMESTAMP(fsp=6))
+                        type_=mysql.TIMESTAMP(fsp=6))
 
         op.alter_column(table_name='log', column_name='dttm', type_=mysql.TIMESTAMP(fsp=6))
         op.alter_column(table_name='log', column_name='execution_date',
-            type_=mysql.TIMESTAMP(fsp=6))
+                        type_=mysql.TIMESTAMP(fsp=6))
 
         op.alter_column(table_name='sla_miss', column_name='execution_date',
-            type_=mysql.TIMESTAMP(fsp=6), nullable=False)
+                        type_=mysql.TIMESTAMP(fsp=6), nullable=False)
         op.alter_column(table_name='sla_miss', column_name='timestamp',
-            type_=mysql.TIMESTAMP(fsp=6))
+                        type_=mysql.TIMESTAMP(fsp=6))
 
         op.alter_column(table_name='task_fail', column_name='execution_date',
-            type_=mysql.TIMESTAMP(fsp=6))
+                        type_=mysql.TIMESTAMP(fsp=6))
         op.alter_column(table_name='task_fail', column_name='start_date',
-            type_=mysql.TIMESTAMP(fsp=6))
+                        type_=mysql.TIMESTAMP(fsp=6))
         op.alter_column(table_name='task_fail', column_name='end_date',
-            type_=mysql.TIMESTAMP(fsp=6))
+                        type_=mysql.TIMESTAMP(fsp=6))
 
         # NOTE(kwilson)
         #
@@ -132,18 +132,18 @@ def upgrade():
         # -required
 
         op.alter_column(table_name='task_instance', column_name='execution_date',
-            type_=mysql.TIMESTAMP(fsp=6),
-            nullable=False, server_default=text('CURRENT_TIMESTAMP(6)'))
+                        type_=mysql.TIMESTAMP(fsp=6), nullable=False,
+                        server_default=text('CURRENT_TIMESTAMP(6)'))
         op.alter_column(table_name='task_instance', column_name='start_date',
-            type_=mysql.TIMESTAMP(fsp=6))
+                        type_=mysql.TIMESTAMP(fsp=6))
         op.alter_column(table_name='task_instance', column_name='end_date',
-            type_=mysql.TIMESTAMP(fsp=6))
+                        type_=mysql.TIMESTAMP(fsp=6))
         op.alter_column(table_name='task_instance', column_name='queued_dttm',
-            type_=mysql.TIMESTAMP(fsp=6))
+                        type_=mysql.TIMESTAMP(fsp=6))
 
         op.alter_column(table_name='xcom', column_name='timestamp', type_=mysql.TIMESTAMP(fsp=6))
         op.alter_column(table_name='xcom', column_name='execution_date',
-            type_=mysql.TIMESTAMP(fsp=6))
+                        type_=mysql.TIMESTAMP(fsp=6))
 
     else:
         # sqlite and mssql datetime are fine as is.  Therefore, not converting
