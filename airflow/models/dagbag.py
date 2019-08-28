@@ -134,8 +134,10 @@ class DagBag(BaseDagBag, LoggingMixin):
                 )
         ):
             # Reprocess source file
+            # TODO: remove the below hack to find relative dag location in webserver
+            filepath = dag.fileloc if dag else orm_dag.fileloc
             found_dags = self.process_file(
-                filepath=correct_maybe_zipped(orm_dag.fileloc), only_if_updated=False)
+                filepath=correct_maybe_zipped(filepath), only_if_updated=False)
 
             # If the source file no longer exports `dag_id`, delete it from self.dags
             if found_dags and dag_id in [found_dag.dag_id for found_dag in found_dags]:
