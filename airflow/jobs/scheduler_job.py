@@ -1239,7 +1239,7 @@ class SchedulerJob(BaseJob):
                     schedule_delay = dag_run.start_date - expected_start_date
                     Stats.timing(
                         'dagrun.schedule_delay.{dag_id}'.format(dag_id=dag.dag_id),
-                        schedule_delay)
+                        schedule_delay.total_seconds())
                 self.log.info("Created %s", dag_run)
             self._process_task_instances(dag, tis_out)
             self.manage_slas(dag)
