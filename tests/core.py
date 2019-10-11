@@ -37,7 +37,6 @@ from email.mime.application import MIMEApplication
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from numpy.testing import assert_array_almost_equal
-from six.moves.urllib.parse import urlencode
 from time import sleep
 
 from bs4 import BeautifulSoup

@@ -20,7 +20,6 @@
 import os
 import unittest
 from datetime import datetime, timedelta
-from tempfile import NamedTemporaryFile
 from tests.compat import mock
 
 from airflow import DAG, configuration
