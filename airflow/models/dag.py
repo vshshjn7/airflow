@@ -1506,6 +1506,12 @@ class DagModel(Base):
         return self.dag_id.replace('.', '__dot__')
 
     def get_dag(self):
+        try:
+            path_split = self.fileloc.split("airflow_home")[1]
+            self.fileloc = os.environ.get("AIRFLOW_HOME") + path_split
+        except IndexError as ie:
+            self.log.info("No airflow_home in path: " + self.fileloc)
+
         return DagBag(dag_folder=self.fileloc).get_dag(self.dag_id)
 
     @provide_session
