@@ -1510,7 +1510,7 @@ class DagModel(Base, LoggingMixin):
             # fix for manual trigger, as db stores scheduler path which is different from webserver
             # path, as a result, this function returns NONE
             path_regex = "airflow_scheduler-.-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[" \
-                         "0-9a-f]{12}/runs/latest/sandbox/airflow_home"
+                         "0-9a-f]{12}/runs/.*/sandbox/airflow_home"
             path_split = re.split(path_regex, self.fileloc)[1]
             self.fileloc = os.environ.get("AIRFLOW_HOME") + path_split
         except IndexError:
