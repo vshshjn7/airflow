@@ -1431,7 +1431,7 @@ class DAG(BaseDag, LoggingMixin):
         visit_map[task_id] = DagBag.CYCLE_DONE
 
 
-class DagModel(Base):
+class DagModel(Base, LoggingMixin):
     __tablename__ = "dag"
     """
     These items are stored in the database for state related information
