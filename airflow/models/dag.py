@@ -1431,8 +1431,7 @@ class DAG(BaseDag, LoggingMixin):
         visit_map[task_id] = DagBag.CYCLE_DONE
 
 
-class DagModel(Base):
-
+class DagModel(Base, LoggingMixin):
     __tablename__ = "dag"
     """
     These items are stored in the database for state related information
@@ -1506,6 +1505,20 @@ class DagModel(Base):
         return self.dag_id.replace('.', '__dot__')
 
     def get_dag(self):
+        # TODO: [CX-16591] Resolve this in upstream by storing relative path in db (config driven)
+        try:
+            # Fix for DAGs that are manually triggered in the UI, as the DAG path in the DB is
+            # stored by the scheduler which has a different path than the webserver due to absolute
+            # paths in aurora including randomly generated job-specific directories. Due to this
+            # the path the webserver uses when it tries to trigger a DAG does not match the
+            # existing scheduler path and the DAG can not be found.
+            path_regex = "airflow_scheduler-.-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[" \
+                         "0-9a-f]{12}/runs/.*/sandbox/airflow_home"
+            path_split = re.split(path_regex, self.fileloc)[1]
+            self.fileloc = os.environ.get("AIRFLOW_HOME") + path_split
+        except IndexError:
+            self.log.info("No airflow_home in path: " + self.fileloc)
+
         return DagBag(dag_folder=self.fileloc).get_dag(self.dag_id)
 
     @provide_session

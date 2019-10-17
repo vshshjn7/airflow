@@ -20,7 +20,6 @@
 import os
 import unittest
 from datetime import datetime, timedelta
-from tempfile import NamedTemporaryFile
 from tests.compat import mock
 
 from airflow import DAG, configuration
@@ -95,6 +94,7 @@ class BashOperatorTestCase(unittest.TestCase):
         bash_operator = BashOperator(
             bash_command='echo "stdout"',
             task_id='test_return_value',
+            xcom_push=True,
             dag=None
         )
         return_value = bash_operator.execute(context={})
