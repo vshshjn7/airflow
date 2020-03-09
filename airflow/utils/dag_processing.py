@@ -1209,9 +1209,14 @@ class DagFileProcessorManager(LoggingMixin):
                 processor.pid, file_path
             )
             self._processors[file_path] = processor
+        
+        self.log.info("Number of active file processors: {}".format(len(self._processors)))
 
         # Update heartbeat count.
         self._run_count[self._heart_beat_key] += 1
+
+        simple_dag_ids = ", ".join([simple_dag.dag_id for simple_dag in simple_dags])
+        self.log.info("Processed DAGs: {}".format(simple_dag_ids))
 
         return simple_dags
 

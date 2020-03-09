@@ -125,7 +125,10 @@ class DagFileProcessor(AbstractDagFileProcessor, LoggingMixin):
         stdout = StreamLogWriter(log, logging.INFO)
         stderr = StreamLogWriter(log, logging.WARN)
 
+        log.info("Setting log context for file {}".format(file_path))
+        # log file created here
         set_context(log, file_path)
+        log.info("Successfully set log context for file {}".format(file_path))
         setproctitle("airflow scheduler - DagFileProcessor {}".format(file_path))
 
         try:
@@ -145,6 +148,7 @@ class DagFileProcessor(AbstractDagFileProcessor, LoggingMixin):
             log.info("Started process (PID=%s) to work on %s",
                      os.getpid(), file_path)
             scheduler_job = SchedulerJob(dag_ids=dag_id_white_list, log=log)
+            log.info("Processing file {}".format(file_path))
             result = scheduler_job.process_file(file_path, pickle_dags)
             result_channel.send(result)
             end_time = time.time()
@@ -167,6 +171,7 @@ class DagFileProcessor(AbstractDagFileProcessor, LoggingMixin):
         """
         Launch the process and start processing the DAG.
         """
+        self.log.info("Launching process to process DAG at {}".format(self.file_path))
         self._parent_channel, _child_channel = multiprocessing.Pipe()
         self._process = multiprocessing.Process(
             target=type(self)._run_file_processor,
@@ -1405,6 +1410,9 @@ class SchedulerJob(BaseJob):
                                                                State.UP_FOR_RESCHEDULE],
                                                               State.NONE)
 
+                    scheduled_dag_ids = ", ".join(simple_dag_bag.dag_ids)
+                    self.log.info('DAGs to be executed: {}'.format(scheduled_dag_ids))
+
                     self._execute_task_instances(simple_dag_bag,
                                                  (State.SCHEDULED,))
                 except Exception as e:
@@ -1453,7 +1461,9 @@ class SchedulerJob(BaseJob):
                 sleep(sleep_length)
 
         # Stop any processors
+        self.log.info("Terminating DAG processors")
         self.processor_agent.terminate()
+        self.log.info("All DAG processors terminated")
 
         # Verify that all files were processed, and if so, deactivate DAGs that
         # haven't been touched by the scheduler as they likely have been
