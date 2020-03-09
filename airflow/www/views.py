@@ -696,7 +696,7 @@ class Airflow(AirflowViewMixin, BaseView):
         dm = models.DagModel
         dag = session.query(dm).filter(dm.dag_id == dag_id).first()
         try:
-            with wwwutils.open_maybe_zipped(dag.fileloc, 'r') as f:
+            with wwwutils.open_maybe_zipped(dag.get_local_fileloc(), 'r') as f:
                 code = f.read()
             html_code = highlight(
                 code, lexers.PythonLexer(), HtmlFormatter(linenos=True))
