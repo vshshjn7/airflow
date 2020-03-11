@@ -1207,10 +1207,9 @@ class SchedulerJob(BaseJob):
 
                 if self.executor.has_task(task_instance):
                     self.log.debug(
-                        "Not handling task %s as the executor reports it is running",
+                        "Still handling task %s even though as the executor reports it is running",
                         task_instance.key
                     )
-                    continue
                 executable_tis.append(task_instance)
                 open_slots -= 1
                 dag_id_to_possibly_running_task_count[dag_id] += 1
