@@ -1708,8 +1708,13 @@ class SchedulerJob(BaseJob):
                 scheduled_dag_ids = ", ".join(simple_dag_bag.dag_ids)
                 self.log.info('DAGs to be executed: {}'.format(scheduled_dag_ids))
 
+                # TODO(CX-17516): State.QUEUED has been added here which is a hack as the Celery
+                # Executor does not reliably enqueue tasks with the my MySQL broker, and we have
+                # seen tasks hang after they get queued. The effect of this hack is queued tasks
+                # will constantly be requeued and resent to the executor (Celery).
+                # This should be removed when we switch away from the MySQL Celery backend.
                 self._execute_task_instances(simple_dag_bag,
-                                             (State.SCHEDULED,))
+                                             (State.SCHEDULED, State.QUEUED))
 
             # Call heartbeats
             self.log.debug("Heartbeating the executor")
