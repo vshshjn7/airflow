@@ -349,7 +349,7 @@ class BaseOperator(LoggingMixin):
             )
         self._schedule_interval = schedule_interval
         self.retries = retries if retries is not None else \
-            configuration.conf.getint('core', 'default_task_retries', fallback=0)
+            int(configuration.conf.get('core', 'default_task_retries', fallback=0))
         self.queue = queue
         self.pool = pool
         self.sla = sla

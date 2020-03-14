@@ -52,7 +52,7 @@ class FileTaskHandler(logging.Handler):
         :param ti: task instance object
         """
         local_loc = self._init_file(ti)
-        self.handler = logging.FileHandler(local_loc)
+        self.handler = logging.FileHandler(local_loc, encoding='utf-8')
         self.handler.setFormatter(self.formatter)
         self.handler.setLevel(self.level)
 
