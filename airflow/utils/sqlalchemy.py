@@ -160,7 +160,9 @@ class UtcDateTime(TypeDecorator):
                 raise TypeError('expected datetime.datetime, not ' +
                                 repr(value))
             elif value.tzinfo is None:
-                raise ValueError('naive datetime is disallowed')
+                #TODO: Sumit, causing issue with mysql, need to fix upstream
+                #raise ValueError('naive datetime is disallowed')
+                value = value.replace(tzinfo=utc)
 
             return value.astimezone(utc)
 
