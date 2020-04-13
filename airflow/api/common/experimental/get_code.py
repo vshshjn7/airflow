@@ -31,7 +31,7 @@ def get_code(dag_id):  # type (str) -> str
     dag = check_and_get_dag(dag_id=dag_id)
 
     try:
-        with wwwutils.open_maybe_zipped(dag.get_local_fileloc(), 'r') as file:
+        with wwwutils.open_maybe_zipped(dag.fileloc, 'r') as file:
             code = file.read()
             return code
     except IOError as exception:
