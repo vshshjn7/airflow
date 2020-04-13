@@ -117,6 +117,7 @@ class DagBag(BaseDagBag, LoggingMixin):
         """
         from airflow.models.dag import DagModel  # Avoid circular import
 
+        dag = None
         # If asking for a known subdag, we want to refresh the parent
         root_dag_id = dag_id
         if dag_id in self.dags:
@@ -135,7 +136,7 @@ class DagBag(BaseDagBag, LoggingMixin):
         ):
             # Reprocess source file
             # TODO: remove the below hack to find relative dag location in webserver
-            filepath = dag.fileloc if dag else orm_dag.fileloc
+            filepath = dag.get_local_fileloc() if dag else orm_dag.get_local_fileloc()
             found_dags = self.process_file(
                 filepath=correct_maybe_zipped(filepath), only_if_updated=False)
 
@@ -248,7 +249,7 @@ class DagBag(BaseDagBag, LoggingMixin):
                 if isinstance(dag, DAG):
                     if not dag.full_filepath:
                         dag.full_filepath = filepath
-                        if dag.fileloc != filepath and not is_zipfile:
+                        if dag.get_local_fileloc() != filepath and not is_zipfile:
                             dag.fileloc = filepath
                     try:
                         dag.is_subdag = False

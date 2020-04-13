@@ -41,9 +41,9 @@ def delete_dag(dag_id, keep_records_in_log=True, session=None):
     if dag is None:
         raise DagNotFound("Dag id {} not found".format(dag_id))
 
-    if dag.fileloc and os.path.exists(dag.fileloc):
+    if dag.get_local_fileloc() and os.path.exists(dag.get_local_fileloc()):
         raise DagFileExists("Dag id {} is still in DagBag. "
-                            "Remove the DAG file first: {}".format(dag_id, dag.fileloc))
+                            "Remove the DAG file first: {}".format(dag_id, dag.get_local_fileloc()))
 
     count = 0
 
