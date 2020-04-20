@@ -281,7 +281,7 @@ class BaseOperator(LoggingMixin):
         priority_weight=1,  # type: int
         weight_rule=WeightRule.DOWNSTREAM,  # type: str
         queue=configuration.conf.get('celery', 'default_queue'),  # type: str
-        pool=Pool.DEFAULT_POOL_NAME,  # type: str
+        pool=None,  # type: str
         sla=None,  # type: Optional[timedelta]
         execution_timeout=None,  # type: Optional[timedelta]
         on_failure_callback=None,  # type: Optional[Callable]
@@ -351,7 +351,7 @@ class BaseOperator(LoggingMixin):
         self.retries = retries if retries is not None else \
             int(configuration.conf.get('core', 'default_task_retries', fallback=0))
         self.queue = queue
-        self.pool = pool
+        self.pool = Pool.DEFAULT_POOL_NAME if pool is None else pool
         self.sla = sla
         self.execution_timeout = execution_timeout
         self.on_failure_callback = on_failure_callback
