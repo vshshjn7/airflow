@@ -160,6 +160,9 @@ class WorkerConfiguration(LoggingMixin):
         os_env.update(env)
         env = os_env
 
+        #[EWT-267] setting statsd prefix as worker for worker pod
+        env['AIRFLOW__SCHEDULER__STATSD_PREFIX'] = 'worker'
+
         return env
 
     def _get_configmaps(self):
