@@ -257,3 +257,8 @@ class KubernetesRequestFactory:
                     }
                 }
             )
+
+    @staticmethod
+    def extract_priority_class(pod, req):
+        if pod.priority_class:
+            req['spec']['priorityClassName'] = pod.priority_class
