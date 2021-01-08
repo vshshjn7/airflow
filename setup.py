@@ -390,6 +390,8 @@ slack = [
     'websocket-client<0.55.0'
 ]
 snowflake = [
+    'requests>=2.20.0, <2.23.0;python_version<"3.0"',
+    'requests>=2.20.0, <2.24.0;python_version>="3.0"',
     'snowflake-connector-python>=1.5.2',
     'snowflake-sqlalchemy>=1.1.0',
 ]
@@ -595,7 +597,7 @@ EXTRAS_REQUIREMENTS = {
 #####################################################################################################
 INSTALL_REQUIREMENTS = [
     'alembic>=1.0, <2.0',
-    'argcomplete~=1.10',
+    'argcomplete==1.10.3',
     'attrs>=20.0, <21.0',
     'cached_property~=1.5',
     # cattrs >= 1.1.0 dropped support for Python 3.6
@@ -641,8 +643,6 @@ INSTALL_REQUIREMENTS = [
     'python-dateutil>=2.3, <3',
     'python-nvd3~=0.15.0',
     'python-slugify>=3.0.0,<5.0',
-    'requests>=2.20.0, <2.23.0;python_version<"3.0"',  # Required to keep snowflake happy
-    'requests>=2.20.0, <2.24.0;python_version>="3.0"',  # Required to keep snowflake happy
     'setproctitle>=1.1.8, <2',
     'sqlalchemy~=1.3',
     'sqlalchemy_jsonfield==0.8.0;python_version<"3.5"',
