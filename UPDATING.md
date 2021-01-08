@@ -21,6 +21,7 @@
 This file documents any backwards-incompatible changes in Airflow and
 assists users migrating to a new version.
 
+
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of contents**
@@ -195,6 +196,19 @@ Users can now offer a path to a yaml for the KubernetesPodOperator using the `po
 ### Use NULL as default value for dag.description
 
 Now use NULL as default value for dag.description in dag table
+
+## CP
+
+### Ability to patch Pool.DEFAULT_POOL_NAME in BaseOperator
+It was not possible to patch pool in BaseOperator as the signature sets the default value of pool
+as Pool.DEFAULT_POOL_NAME.
+While using subdagoperator in unittest(without initializing the sqlite db), it was throwing the
+following error:
+```
+sqlalchemy.exc.OperationalError: (sqlite3.OperationalError) no such table: slot_pool.
+```
+Fix for this, https://github.com/apache/airflow/pull/8587
+
 
 ### Restrict editing DagRun State in the old UI (Flask-admin based UI)
 

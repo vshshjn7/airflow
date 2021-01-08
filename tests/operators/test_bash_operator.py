@@ -21,6 +21,8 @@ import unittest
 from tests.compat import mock
 from datetime import datetime, timedelta
 from tempfile import NamedTemporaryFile
+from tests.compat import mock
+
 
 from airflow import DAG
 from airflow.operators.bash_operator import BashOperator

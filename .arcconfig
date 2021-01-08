@@ -1,0 +1,6 @@
+{
+  "arc.feature.start.default": "origin/twtr_rb_1.10.0",
+  "arc.land.onto.default": "twtr_rb_1.10.0",
+  "base": "git:merge-base(origin/twtr_rb_1.10.0), arc:amended, arc:prompt",
+  "history.immutable": false
+}

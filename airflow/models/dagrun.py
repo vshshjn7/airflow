@@ -467,6 +467,7 @@ class DagRun(Base, LoggingMixin):
                 'Hit IntegrityError while creating the TIs for %s - %s',
                 dag.dag_id, self.execution_date
             )
+
             self.log.info('Doing session rollback.')
             session.rollback()
 

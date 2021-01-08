@@ -585,6 +585,7 @@ class DagRunTest(unittest.TestCase):
             first_ti.refresh_from_db()
             self.assertEqual(State.NONE, first_ti.state)
 
+
     @parameterized.expand([(state,) for state in State.task_states])
     @mock.patch('airflow.models.dagrun.task_instance_mutation_hook')
     def test_task_instance_mutation_hook(self, state, mock_hook):
@@ -681,3 +682,4 @@ class DagRunTest(unittest.TestCase):
             # Don't write anything to the DB
             session.rollback()
             session.close()
+

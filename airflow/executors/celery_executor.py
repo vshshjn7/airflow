@@ -166,6 +166,14 @@ class CeleryExecutor(BaseExecutor):
             self._sync_parallelism
         )
 
+    def queue_command(self, simple_task_instance, command, priority=1, queue=None):
+        key = simple_task_instance.key
+        if key not in self.queued_tasks and key not in self.running:
+            self.log.info("Adding to queue: %s", command)
+        else:
+            self.log.info("Adding to queue even though already queued or running {}".format(command, key))
+        self.queued_tasks[key] = (command, priority, queue, simple_task_instance)
+
     def _num_tasks_per_send_process(self, to_send_count):
         """
         How many Celery tasks should each worker process send.

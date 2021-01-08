@@ -123,9 +123,10 @@ def trigger_dag(
         from airflow.configuration import conf
         return conf.getboolean('core', 'store_serialized_dags')
     dagbag = DagBag(
-        dag_folder=dag_model.fileloc,
+        dag_folder=dag_model.get_local_fileloc(),
         store_serialized_dags=read_store_serialized_dags()
     )
+
     dag_run = DagRun()
     triggers = _trigger_dag(
         dag_id=dag_id,

@@ -53,7 +53,7 @@ class FileTaskHandler(logging.Handler):
         :param ti: task instance object
         """
         local_loc = self._init_file(ti)
-        self.handler = logging.FileHandler(local_loc)
+        self.handler = logging.FileHandler(local_loc, encoding='utf-8')
         if self.formatter:
             self.handler.setFormatter(self.formatter)
         self.handler.setLevel(self.level)
@@ -108,6 +108,7 @@ class FileTaskHandler(logging.Handler):
             except Exception as e:
                 log = "*** Failed to load local log file: {}\n".format(location)
                 log += "*** {}\n".format(str(e))
+
         elif conf.get('core', 'executor') == 'KubernetesExecutor':   # pylint: disable=too-many-nested-blocks
             try:
                 from airflow.kubernetes.kube_client import get_kube_client

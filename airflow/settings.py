@@ -37,6 +37,7 @@ from sqlalchemy.pool import NullPool
 
 from airflow.configuration import conf, AIRFLOW_HOME, WEBSERVER_CONFIG  # NOQA F401
 from airflow.logging_config import configure_logging
+from airflow.utils.module_loading import import_string
 from airflow.utils.sqlalchemy import setup_event_handlers
 
 log = logging.getLogger(__name__)
@@ -274,7 +275,8 @@ def prepare_engine_args(disable_connection_pool=False):
         # The maximum overflow size of the pool.
         # When the number of checked-out connections reaches the size set in pool_size,
         # additional connections will be returned up to this limit.
-        # When those additional connections are returned to the pool, they are disconnected and discarded.
+        # When those additional connections are returned to the pool, they are
+        # disconnected and discarded.
         # It follows then that the total number of simultaneous connections
         # the pool will allow is pool_size + max_overflow,
         # and the total number of “sleeping” connections the pool will allow is pool_size.
@@ -296,7 +298,8 @@ def prepare_engine_args(disable_connection_pool=False):
         # https://docs.sqlalchemy.org/en/13/core/pooling.html#disconnect-handling-pessimistic
         pool_pre_ping = conf.getboolean('core', 'SQL_ALCHEMY_POOL_PRE_PING', fallback=True)
 
-        log.debug("settings.prepare_engine_args(): Using pool settings. pool_size=%d, max_overflow=%d, "
+        log.debug("settings.prepare_engine_args(): Using pool settings. pool_size=%d, "
+                  "max_overflow=%d, "
                   "pool_recycle=%d, pid=%d", pool_size, max_overflow, pool_recycle, os.getpid())
         engine_args['pool_size'] = pool_size
         engine_args['pool_recycle'] = pool_recycle

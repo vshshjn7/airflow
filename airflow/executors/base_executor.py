@@ -58,7 +58,7 @@ class BaseExecutor(LoggingMixin):
             self.log.info("Adding to queue: %s", command)
             self.queued_tasks[key] = (command, priority, queue, simple_task_instance)
         else:
-            self.log.info("could not queue task %s", key)
+            self.log.error("could not queue task %s", key)
 
     def queue_task_instance(
             self,

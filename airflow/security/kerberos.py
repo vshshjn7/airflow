@@ -89,13 +89,14 @@ def renew_from_kt(principal, keytab):
         sys.exit(subp.returncode)
 
     global NEED_KRB181_WORKAROUND
-    if NEED_KRB181_WORKAROUND is None:
-        NEED_KRB181_WORKAROUND = detect_conf_var()
-    if NEED_KRB181_WORKAROUND:
-        # (From: HUE-640). Kerberos clock have seconds level granularity. Make sure we
-        # renew the ticket after the initial valid time.
-        time.sleep(1.5)
-        perform_krb181_workaround(principal)
+    # This breaks for twitter as we dont issue renewable tickets
+    # if NEED_KRB181_WORKAROUND is None:
+    #     NEED_KRB181_WORKAROUND = detect_conf_var()
+    # if NEED_KRB181_WORKAROUND:
+    #     # (From: HUE-640). Kerberos clock have seconds level granularity. Make sure we
+    #     # renew the ticket after the initial valid time.
+    #     time.sleep(1.5)
+    #     perform_krb181_workaround()
 
 
 def perform_krb181_workaround(principal):

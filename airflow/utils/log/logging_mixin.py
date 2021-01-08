@@ -80,6 +80,7 @@ class LoggingMixin(object):
             set_context(self.log, context)
 
 
+# TODO: Formally inherit from io.IOBase
 class StreamLogWriter(object):
     """
     Allows to redirect stdout and stderr to logger
