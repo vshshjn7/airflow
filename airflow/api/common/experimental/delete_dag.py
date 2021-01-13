@@ -18,6 +18,7 @@
 # under the License.
 """Delete DAGs APIs."""
 import logging
+import os
 
 from sqlalchemy import or_
 
@@ -25,7 +26,7 @@ from airflow import models
 from airflow.models import TaskFail, DagModel
 from airflow.models.serialized_dag import SerializedDagModel
 from airflow.utils.db import provide_session
-from airflow.exceptions import DagNotFound
+from airflow.exceptions import DagFileExists, DagNotFound
 from airflow.settings import STORE_SERIALIZED_DAGS
 
 log = logging.getLogger(__name__)
@@ -50,6 +51,10 @@ def delete_dag(dag_id, keep_records_in_log=True, session=None):
     # There may be a lag, so explicitly removes serialized DAG here.
     if STORE_SERIALIZED_DAGS and SerializedDagModel.has_dag(dag_id=dag_id, session=session):
         SerializedDagModel.remove_dag(dag_id=dag_id, session=session)
+
+    if dag.get_local_fileloc() and os.path.exists(dag.get_local_fileloc()):
+        raise DagFileExists("Dag id {} is still in DagBag. "
+                            "Remove the DAG file first: {}".format(dag_id, dag.get_local_fileloc()))
 
     count = 0
 
