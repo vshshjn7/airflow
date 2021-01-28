@@ -713,7 +713,7 @@ class Airflow(AirflowViewMixin, BaseView):
         try:
             dag_id = request.args.get('dag_id')
             dag_orm = models.DagModel.get_dagmodel(dag_id, session=session)
-            code = DagCode.get_code_by_fileloc(dag_orm.fileloc)
+            code = DagCode.get_code_by_fileloc(dag_orm.get_local_fileloc())
             html_code = Markup(highlight(
                 code, lexers.PythonLexer(), HtmlFormatter(linenos=True)))
 
